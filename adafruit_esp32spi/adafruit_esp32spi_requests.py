@@ -204,11 +204,13 @@ def request(method, url, data=None, json=None, headers=None, stream=False):
                 break
 
             #print("**line: ", line)
-            title, content = line.split(b': ', 1)
-            if title and content:
-                title = str(title.lower(), 'utf-8')
-                content = str(content, 'utf-8')
-                resp.headers[title] = content
+            header_tuple = line.split(b': ', 1)
+            if len(header_tuple) == 2:  # sometimes there aren't two values?
+                title, content = header_tuple
+                if title and content:
+                    title = str(title.lower(), 'utf-8')
+                    content = str(content, 'utf-8')
+                    resp.headers[title] = content
 
             if line.startswith(b"Transfer-Encoding:"):
                 if b"chunked" in line:
